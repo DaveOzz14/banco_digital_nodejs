@@ -27,7 +27,7 @@ export default function PaymentError() {
         <div style={{ textAlign: 'center', marginTop: '2rem' }}>
           <button
             className="button"
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/Home')}
           >
             Volver al inicio
           </button>

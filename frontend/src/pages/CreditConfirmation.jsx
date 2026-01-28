@@ -24,7 +24,7 @@ export default function CreditConfirmation() {
         </div>
 
         <div style={{ textAlign: 'center', marginTop: '2rem' }}>
-          <a href="/" className="button">
+          <a href="/Home" className="button">
             Volver al inicio
           </a>
         </div>
