@@ -13,6 +13,51 @@ Analyze, instrument, and commit OpenTelemetry observability
 
 Target repository:DaveOzz14/banco_digital_nodejs
 
+GLOBAL INSTRUMENTATION ARCHITECTURE RULE (NON-NEGOTIABLE)
+The observability architecture MUST follow a SINGLE ENTRY POINT model.
+You MUST create ONE and ONLY ONE instrumentation file (example: src/telemetry/instrumentation.js).
+This file is the SOLE AUTHORIZED PLACE where:
+OpenTelemetry SDK is initialized
+Resource is constructed
+TracerProvider, MeterProvider, LoggerProvider are created
+OTLP exporters (traces, metrics, logs) are configured
+Batch processors are registered
+Auto-instrumentations are enabled
+
+❌ You MUST NOT:
+Create helper files
+Create wrapper utilities
+Create span factories
+Create logger helpers
+Create telemetry abstractions
+Duplicate SDK initialization logic anywhere else
+
+✅ All other files in the system (controllers, services, routes, UI handlers, etc.):
+MUST import telemetry primitives ONLY from this single instrumentation file
+MUST execute:
+Manual spans
+Log records
+Metric recordings
+using the instances exposed by this file
+
+The instrumentation file MUST:
+Export initialized instances (tracer, meter, logger)
+Guarantee a SINGLE global context
+Ensure correct trace/span correlation for logs
+
+Be executed EXACTLY ONCE at application startup
+Any telemetry logic found outside this file that:
+Initializes SDKs
+Creates resources
+Configures exporters
+Configures processors
+
+is considered a FAILURE of the pipeline.
+This rule applies to:
+Backend
+Frontend (if applicable)
+Shared modules
+
 PIPELINE – MANDATORY EXECUTION STEPS
 STEP 1 — FULL REPOSITORY ANALYSIS (READ-ONLY)
 1. Read the ENTIRE repository from the default branch. 
@@ -134,17 +179,17 @@ Where parseResourceAttributes() parses OTEL_RESOURCE_ATTRIBUTES from process.env
 
 4. If `.env.example` exists, update it accordingly.
 STEP 4 — FULL OPEN TELEMETRY INSTRUMENTATION
-You MUST implement ALL signals:
+You MUST create exactly ONE instrumentation file as defined in the
+GLOBAL INSTRUMENTATION ARCHITECTURE RULE.
+This file MUST:
+Initialize all OpenTelemetry components
+Be imported as a side-effect at application bootstrap
+Export tracer, meter, and logger instances
+All spans, metrics, and logs in the rest of the codebase MUST:
+Be executed inline in each file
+Use the exported instances
+NOT rely on helpers or abstractions
 
-✔ Distributed Tracing  
-✔ Metrics  
-✔ Logs with trace/span correlation  
-
-Mandatory requirements:
-1. Explicitly configure:
-   - TracerProvider
-   - MeterProvider
-   - LoggerProvider
 2. Use Batch processors for all exporters.
 3. Configure a Resource with:
    - service.name
@@ -169,6 +214,10 @@ For EACH manual span:
 - Exception recording
 - ERROR status on failures
 - Correct parent-child context
+
+Manual spans MUST be created directly inside each business file
+(controller, service, UI handler).
+Span creation logic MUST NOT be abstracted into helpers or shared utilities.
 
 STEP 6 — METRICS & LOGS IMPLEMENTATION
 Metrics:
