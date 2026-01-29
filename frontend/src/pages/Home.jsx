@@ -1,4 +1,18 @@
+import { tracer } from '../telemetry/instrumentation.js';
+import { useEffect } from 'react';
+
 export default function Home() {
+  useEffect(() => {
+    const span = tracer.startSpan('page.home.view', {
+      attributes: {
+        'ui.component': 'Home',
+        'ui.action': 'page_view'
+      }
+    });
+    span.addEvent('home_page_loaded');
+    span.end();
+  }, []);
+
   return (
     <div className="container">
       <div className="header">

@@ -1,8 +1,25 @@
 import { useLocation, useNavigate } from 'react-router-dom';
+import { tracer } from '../telemetry/instrumentation.js';
+import { useEffect } from 'react';
 
 export default function PaymentError() {
   const { state } = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (state?.transactionId) {
+      const span = tracer.startSpan('page.payment_error.view', {
+        attributes: {
+          'ui.component': 'PaymentError',
+          'ui.action': 'page_view',
+          'payment.transaction_id': state.transactionId,
+          'payment.error_message': state.message
+        }
+      });
+      span.addEvent('payment_error_page_displayed');
+      span.end();
+    }
+  }, [state]);
 
   if (!state?.message) {
     navigate('/');

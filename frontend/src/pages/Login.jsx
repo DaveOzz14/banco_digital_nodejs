@@ -1,10 +1,23 @@
 import { useNavigate } from 'react-router-dom';
+import { tracer } from '../telemetry/instrumentation.js';
 
 export default function Login() {
   const navigate = useNavigate();
 
   const submit = (e) => {
     e.preventDefault();
+    
+    const span = tracer.startSpan('user.login', {
+      attributes: {
+        'user.action': 'login',
+        'ui.component': 'Login',
+        'ui.event': 'form_submit'
+      }
+    });
+
+    span.addEvent('login_form_submitted');
+    span.end();
+
     navigate('/Home');
   };
 
