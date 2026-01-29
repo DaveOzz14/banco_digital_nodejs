@@ -15,8 +15,8 @@ Target repository:DaveOzz14/banco_digital_nodejs
 
 PIPELINE – MANDATORY EXECUTION STEPS
 STEP 1 — FULL REPOSITORY ANALYSIS (READ-ONLY)
-1. Read the ENTIRE repository from the default branch.
-2. Inspect all directories and files.
+1. Read the ENTIRE repository from the default branch. 
+2. Inspect all directories and files (Except files like Readme.md, Except Folders like node_modules).
 3. Automatically detect and document internally:
    - Programming language(s)
    - Backend framework (FastAPI, Flask, Django, Primefaces, SpringBoot, Node, etc)
@@ -39,14 +39,13 @@ Login (/Login)
         → Payment Response (/PaymentError)
 
 2. Using the repository analysis from STEP 1, you MUST:
-Identify ALL backend routes, controllers, services, handlers
+Identify ALL backend routes, controllers, services, handlers, etc.
 Identify ALL frontend components, views, hooks, actions
 Identify ALL API calls, HTTP clients, middleware
 Identify ALL shared utilities
 that are DIRECTLY involved in the authorized flow above.
 
 3. You MUST construct an internal dependency graph limited STRICTLY to:
-
 Files executed
 Files imported
 Files transitively required
@@ -55,7 +54,6 @@ ONLY when the authorized flow is executed
 4. STRICT EXCLUSION RULES (NON-NEGOTIABLE)
 You MUST NOT instrument, modify, or add telemetry to:
 Mortgage / Home Loan flows
-
 Crédito Hipotecario routes, services, UI, APIs
 
 Any file not reachable from the authorized flow
@@ -78,12 +76,11 @@ This step ONLY constrains the scope of STEP 2 → STEP 7
 
 7. ABSOLUTE RULE
 Any telemetry outside the authorized flow is considered a FAILURE.
-
 Only after this step is fully completed, you MAY proceed to STEP 2.
 
 STEP 2 — OBSERVABILITY DESIGN & COMPATIBILITY VALIDATION
-1. Select ONLY official, stable OpenTelemetry SDKs.
-2. Ensure FULL compatibility with detected versions.
+1. Select ONLY official, stable OpenTelemetry SDKs and Versions.
+2. Ensure FULL compatibility with detected versions (NON-NEGOTIABLE).
 3. Do NOT upgrade dependencies unless strictly required.
 4. Design a configuration that:
    - Exports telemetry on FIRST RUN
@@ -91,7 +88,7 @@ STEP 2 — OBSERVABILITY DESIGN & COMPATIBILITY VALIDATION
 5. OTLP transport MUST be:
    - http/protobuf ONLY
 
-STEP 3 — ENVIRONMENT CONFIGURATION (UPDATED)
+STEP 3 — ENVIRONMENT CONFIGURATION
 IMPORTANT: LANGUAGE-SPECIFIC RULES APPLY
 1. Environment variables MUST be provided by the OPERATING SYSTEM
 The application MUST read ALL OpenTelemetry configuration exclusively from process.env
@@ -120,7 +117,7 @@ OTEL_EXPORTER_OTLP_ENDPOINT=https://otlp-gateway-prod-us-east-2.grafana.net/otlp
 OTEL_EXPORTER_OTLP_TRACES_ENDPOINT=https://otlp-gateway-prod-us-east-2.grafana.net/otlp/v1/traces
 OTEL_EXPORTER_OTLP_METRICS_ENDPOINT=https://otlp-gateway-prod-us-east-2.grafana.net/otlp/v1/metrics
 OTEL_EXPORTER_OTLP_LOGS_ENDPOINT=https://otlp-gateway-prod-us-east-2.grafana.net/otlp/v1/logs
-OTEL_EXPORTER_OTLP_HEADERS=Authorization=Basic <REDACTED>
+OTEL_EXPORTER_OTLP_HEADERS=Authorization=Basic MTQ5OTM3MjpnbGNfZXlKdklqb2lNVFkwTk...
 OTEL_SERVICE_NAME=banco_digital_observability
 OTEL_RESOURCE_ATTRIBUTES=deployment.environment=production,service.version=1.0.0
 
@@ -190,11 +187,10 @@ STEP 7 — CREATE NEW BRANCH AND COMMIT
 2. The branch MUST include:
    - All modified and not modified source files
    - Dependency updates
-   - `.env` and `.env.example`
+   
 3. Commit ALL generated ,modified and not modified files to `app_otel`.
 4. NO changes must be committed to the original branch.
 5. .env and .env.example MUST NOT be created for Node.js
-6. No environment configuration files should be committed for Node.js backends
 
 STEP 8 — FINAL VALIDATION
 Before finishing, verify internally that:
@@ -227,6 +223,7 @@ As the FINAL step of the pipeline, you MUST:
    - No omissions
 
 5. This step is REQUIRED for validation and review.
+6. Creat a file sumary_instrumentation.md with all the resume for instrumentation and push in branch.
    Absence of this output is considered a FAILURE of the pipeline.
 
 FINAL OUTPUT REQUIREMENTS
