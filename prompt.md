@@ -11,7 +11,8 @@ OBJECTIVE
 Analyze, instrument, and commit OpenTelemetry observability
 (TRACES, METRICS, LOGS) into a NEW GitHub branch named: app_otel
 
-Target repository:DaveOzz14/banco_digital_nodejs
+Target repository:DaveOzz14/banco_digital_python
+
 
 GLOBAL INSTRUMENTATION ARCHITECTURE RULE (NON-NEGOTIABLE)
 The observability architecture MUST follow a SINGLE ENTRY POINT model.
@@ -77,11 +78,11 @@ This step MUST complete before moving forward.
 STEP 1.5 — TARGET FLOW DEFINITION & CODE SCOPING (READ-ONLY)
 1. Define the ONLY allowed business flow to be instrumented:
 AUTHORIZED FLOW
-Login (/Login)
-  → Home (/Home)
-    → Credit Card Payment (/Payment)
+Login (/)
+  → Home (/home)
+    → Credit Card Payment (/tarjeta/resumen)
       → Pay Button Action
-        → Payment Response (/PaymentError)
+        → Payment Response (/tarjeta/pagar
 
 2. Using the repository analysis from STEP 1, you MUST:
 Identify ALL backend routes, controllers, services, handlers, etc.
@@ -99,7 +100,7 @@ ONLY when the authorized flow is executed
 4. STRICT EXCLUSION RULES (NON-NEGOTIABLE)
 You MUST NOT instrument, modify, or add telemetry to:
 Mortgage / Home Loan flows
-Crédito Hipotecario routes, services, UI, APIs
+Crédito Hipotecario (/hipotecario/solicitud) routes, services, UI, APIs
 
 Any file not reachable from the authorized flow
 Any background, batch, admin, or unrelated business logic
